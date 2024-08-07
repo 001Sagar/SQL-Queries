@@ -73,13 +73,4 @@ select departmant , count(*) from worker group by departmant having count(*) > 2
 select departmant , sum(salary) from worker group by departmant having sum(salary) > 30000;
 select departmant , avg(salary) from worker group by departmant having avg(salary) > 45000;
 
-select product_id from Products where low_fats = Y AND recyclable  = Y;
 
-
-select name from Customer where referee_id IS NULL OR  referee_id != 2;
-
-SELECT name , population FROM World WHERE area >=  3000000 OR gdp >= 25000000;
-
-SELECT DISTINCT author_id AS id FROM Views WHERE author_id = viewer_id ORDER BY author_id ASC;
-
-SELECT DISTINCT teacher_id , count(DISTINCT subject_id) as cnt FROM Teacher GROUP BY teacher_id , subject_id  ;
