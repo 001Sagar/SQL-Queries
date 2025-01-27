@@ -1,0 +1,110 @@
+-- Create the database and use it
+CREATE DATABASE IF NOT EXISTS BharatPe;
+USE BharatPe;
+
+-- Create the Employee table with proper constraints
+CREATE TABLE IF NOT EXISTS Employee (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(40) UNIQUE NOT NULL, 
+    department VARCHAR(40) NOT NULL,
+    gender ENUM('Male', 'Female'),
+    salary INT NOT NULL,
+    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert sample data into Employee table
+INSERT INTO Employee(name, department, gender, salary, date) 
+VALUES
+    ('Ram', 'Tech', 'Male', 10000, CURRENT_DATE()),
+    ('Laxman', 'Operation', 'Male', 50000, CURRENT_DATE()),
+    ('Shyam', 'Product', 'Male', 40000, CURRENT_DATE()),
+    ('Swati', 'Tech', 'Female', 35000, CURRENT_DATE()),
+    ('Tony', 'Product', 'Male', 30000, CURRENT_DATE()),
+    ('Isha', 'Operation', 'Female', 30000, CURRENT_DATE()),
+    ('Suchi', 'Tech', 'Female', 60000, CURRENT_DATE());
+
+-- Fetch all data from Employee table
+SELECT * FROM Employee;
+
+-- Get the data where the name is Ram
+SELECT name FROM Employee WHERE name = 'Ram';
+
+-- Get employees with salary between 50000 and 100000
+SELECT * FROM Employee WHERE salary BETWEEN 50000 AND 100000;
+
+-- Get employees named Ram, Laxman, and Suchi
+SELECT * FROM Employee WHERE name IN ('Ram', 'Shyam', 'Suchi');
+
+-- Get employees excluding Ram, Shyam, and Suchi
+SELECT * FROM Employee WHERE name NOT IN ('Ram', 'Shyam', 'Suchi');
+
+-- Use of AND and OR operators
+SELECT name 
+FROM Employee 
+WHERE name IN ('Ram', 'Shyam', 'Suchi') AND salary > 50000;
+
+SELECT name 
+FROM Employee 
+WHERE name IN ('Ram', 'Shyam', 'Suchi') OR salary > 50000;
+
+-- Get all data in increasing or decreasing order of salary
+SELECT * FROM Employee ORDER BY salary ASC;
+SELECT * FROM Employee ORDER BY salary DESC;
+
+-- Get the count, sum, and average salary of each department
+SELECT department, COUNT(*) AS employee_count FROM Employee GROUP BY department;
+SELECT department, SUM(salary) AS total_salary FROM Employee GROUP BY department;
+SELECT department, AVG(salary) AS average_salary FROM Employee GROUP BY department;
+SELECT department, MAX(salary) AS max_salary FROM Employee GROUP BY department;
+SELECT department, MIN(salary) AS min_salary FROM Employee GROUP BY department;
+
+-- Use of HAVING to filter the data
+SELECT department, SUM(salary) AS total_salary 
+FROM Employee 
+GROUP BY department 
+HAVING SUM(salary) > 10000;
+
+-- Create the result table with proper constraints
+CREATE TABLE IF NOT EXISTS result (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    employee_id INT NOT NULL,
+    marks INT NOT NULL,
+    division ENUM('Pass', 'Fail'),
+    FOREIGN KEY (employee_id) REFERENCES Employee(id) ON DELETE CASCADE
+);
+
+-- Insert sample data into result table
+INSERT INTO result (employee_id, marks, division) 
+VALUES
+    (1, 133, 'Fail'),
+    (2, 798, 'Pass'),
+    (3, 234, 'Fail'),
+    (4, 756, 'Pass'),
+    (5, 789, 'Pass'),
+    (6, 798, 'Pass'),
+    (7, 213, 'Fail');
+
+-- Fetch all data from result table
+SELECT * FROM result;
+
+-- Get the division status (Pass/Fail) for each employee
+SELECT e.name, r.division 
+FROM Employee e
+LEFT JOIN result r ON e.id = r.employee_id;
+
+-- Get only Passed Students
+SELECT e.name 
+FROM Employee e
+LEFT JOIN result r ON e.id = r.employee_id 
+WHERE r.division = 'Pass';
+
+-- Get the count of Passed and Failed Students
+SELECT division, COUNT(*) AS student_count 
+FROM result 
+GROUP BY division;
+
+-- Create an index on the id column in Employee table
+CREATE INDEX IF NOT EXISTS idx_empid ON Employee(id);
+
+-- Explain how the query works (query execution plan)
+EXPLAIN SELECT * FROM Employee WHERE id = 1;
